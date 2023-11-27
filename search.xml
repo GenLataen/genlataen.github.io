@@ -26,4 +26,17 @@
         <tag>-杂谈</tag>
       </tags>
   </entry>
+  <entry>
+    <title>第三章练习题</title>
+    <url>/2023/11/27/%E6%95%B0%E6%8D%AE%E5%BA%93%E5%BB%BA%E7%AB%8B/</url>
+    <content><![CDATA[<h1 id="本书重要索引网站"><a href="#本书重要索引网站" class="headerlink" title="本书重要索引网站"></a>本书重要索引网站</h1><p>一：<a href="http://zenodo.org/records/3930660">第三章习题答案</a><br>二：<a href="http://zenodo.org/record/1167595">数据集地址</a></p>
+<h1 id="数据集"><a href="#数据集" class="headerlink" title="数据集"></a>数据集</h1><p><strong>数据类型</strong>：</p>
+<p>•<strong>导航数据</strong>，即围绕主要航线航行的船舶的AIS历史位置;<br>•<strong>面向船舶的数据</strong>(例如船舶注册，即具有其特征的船舶列表);<br>•<strong>地理数据</strong>(即船舶航行的制图、地形和监管背景);<br>•<strong>环境数据</strong>(即气候和海况相关信息)</p>
+<h1 id="所需软件"><a href="#所需软件" class="headerlink" title="所需软件"></a>所需软件</h1><p>1.为了组织、存储、访问和处理海事数据的数据库管理系统（DBMS）：<a href="http://www.postgresql.org/"><strong>PostgreSQL</strong></a> <!--[PostgreSQL 11.2 手册](http://http://www.postgres.cn/docs/11/index.html)--><br>  a.<a href="http://postgis.net/"><strong>PostGIS</strong></a>是强大的附件，为DBMS增加了<strong>地理空间</strong>功能<br>  b.<a href="http://www.pgadmin.org/"><strong>PGAdmin</strong></a>可以<strong>创建</strong>和<strong>查询</strong>新的数据库和表</p>
+<p>2.为了可视化，需准备使用专用的应用程序和应用程序编程接口(API)：<br><a href="http://grafana.com/"><strong>Grafana</strong></a>、<a href="http://d3js.org/"><strong>数据驱动文档(D3)</strong></a>、<a href="http://www.elastic.co/products/kibana"><strong>Kibana</strong></a></p>
+<p>3.可视化分析工具： <a href="https://www.qgis.org/"><strong>QGIS</strong></a><!--[QGIS在线用户指南](http://docs.qgis.org/3.4/en/docs/user_manual/)--></p>
+<h2 id="安装软件"><a href="#安装软件" class="headerlink" title="安装软件"></a>安装软件</h2><p>&#x3D;&#x3D;本章中介绍的所有查询都是使用本地安装的<strong>PostgreSQL 11.5</strong>、<strong>PostGIS 2.5.3</strong>和<strong>pgAdmin4v4.18</strong> (Windows x86-64)编写的&#x3D;&#x3D;</p>
+<p>安装过程比较简单，这里就不赘述了</p>
+]]></content>
+  </entry>
 </search>
