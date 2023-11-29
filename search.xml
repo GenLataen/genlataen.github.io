@@ -1,48 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <search>
   <entry>
-    <title>航海大数据作业：第三章练习题</title>
-    <url>/2023/11/27/%E6%95%B0%E6%8D%AE%E5%BA%93%E5%BB%BA%E7%AB%8B/</url>
-    <content><![CDATA[<p>[TOC]</p>
-<p>##一：实验前准备</p>
-<p>###1.1本书重要索引网站（<em>非常重要！！！！</em>）<br>1.SQL-<strong>答案文件</strong>：<a href="http://zenodo.org/records/3930660">第三章习题答案</a><br>2.需要处理的<strong>数据</strong>：<a href="http://zenodo.org/record/1167595">数据集地址</a></p>
-<p><em>注意：打开以上两个网站需要魔法</em><br>###1.2知识准备</p>
-<p>####1.2.1所要处理的数据类型如下<br> •<strong>导航数据</strong>，即围绕主要航线航行的船舶的AIS历史位置;<br> •<strong>面向船舶的数据</strong>(例如船舶注册，即具有其特征的船舶列表);<br> •<strong>地理数据</strong>(即船舶航行的制图、地形和监管背景);<br> •<strong>环境数据</strong>(即气候和海况相关信息)</p>
-<p>####1.2.2领先的海洋信息研究课题<br>•<strong>船舶轨迹分析和预测</strong>，最近主要集中在AIS系统和补充源来预测和分析船舶轨迹[<br>•<strong>交通预测</strong>，如港口吞吐量处理和货物吞吐量预测<br>•<strong>碰撞预防</strong>，通过分析船舶的航行行为来分析船舶碰撞的风险<br>•<strong>船舶检测、分类和识别，分析划定区域内摄像机的视频</strong>，例如检测小型船只，或在较大区域内的遥感图像<br>•<strong>异常检测</strong>，主要采用数据驱动的方法对正常流量进行建模，任何异常行为都与潜在威胁相关<br>•<strong>对海上人类活动的分析</strong>，如捕鱼、非法交通(人类、毒品、货物)、海盗<br>•<strong>多源信息融合</strong>，减少可用数据的不确定性，提高分析的准确性<br>•<em><strong>海上运输网络的动态</strong></em>，其中通过设计用于分析行为模式的网络抽象，在聚合级别考虑轨迹数据</p>
-<p>####1.2.2重要概念</p>
-<p>imo(国际海事组织)、<br>mmsi(海上移动业务标识)<br>SQL(Structured Query Language):结构化查询语言<br>B-Tree&#x2F;R-Tree&#x2F;GiST(广义搜索树)</p>
-<p>###1.3软件下载安装（<em>非常重要！！！！</em>）</p>
-<p>####1.3.1PostgreSQL<br>为了组织、存储、访问和处理海事数据的数据库管理系统（DBMS）：<a href="http://www.postgresql.org/"><strong>PostgreSQL</strong></a> <!--[PostgreSQL 11.2 手册](http://http://www.postgres.cn/docs/11/index.html)--><br>  a.<a href="http://postgis.net/"><strong>PostGIS</strong></a>是强大的附件，为DBMS增加了<strong>地理空间</strong>功能<br>  b.<a href="http://www.pgadmin.org/"><strong>PGAdmin</strong></a>可以<strong>创建</strong>和<strong>查询</strong>新的数据库和表</p>
-<p><em>注意：只需安装PostgresSQL,PostGIS与PGAdmin为扩展应用</em><br><img src="https://s2.loli.net/2023/11/29/hzSUHL7ucn4pa2X.png" alt="image.png"><br><img src="https://s2.loli.net/2023/11/29/wIMVv2P7BeFmbGx.png" alt="image.png"><br>####1.3.2QGIS<br>可视化分析工具： <a href="https://www.qgis.org/"><strong>QGIS</strong></a><!--[QGIS在线用户指南](http://docs.qgis.org/3.4/en/docs/user_manual/)--></p>
-<p>####1.3.3软件版本<br>&#x3D;&#x3D;本章中介绍的所有查询都是使用本地安装的<strong>PostgreSQL 11.5</strong>、<strong>PostGIS 2.5.3</strong>和<strong>pgAdmin4v4.18</strong> (Windows x86-64)编写的&#x3D;&#x3D;</p>
-<p>##二：开始实验</p>
-<p>###2.1建立数据库并进行查询<br>####2.1.1建立数据库maritime_informatics<br><strong>打开pgAdmin</strong></p>
-<p><img src="https://s2.loli.net/2023/11/29/KuzXiUYNQ3DW4IH.png" alt="image.png"><br><strong>建立数据库</strong></p>
-<p><img src="https://s2.loli.net/2023/11/29/IAT5SNJn3t6gU8d.png" alt="image.png"><br><strong>命名数据库</strong></p>
-<p><img src="https://s2.loli.net/2023/11/29/H3GfOhplL4Tm8QW.png" alt="image.png"><br><strong>建立模式ais_data</strong></p>
-<p><img src="https://s2.loli.net/2023/11/29/tIvPHu1qLZEy8oK.png" alt="image.png"></p>
-<p>####2.1.2创建表ais_data . static_ships<br><code>postgres=# CREATE TABLE ais_data . static_ships ( id bigserial,sourcemmsi integer,imo integer ,callsign text ,shipname text ,shiptype integer ,to_bow integer ,to_stern integer,to_starboard integer ,to_port integer ,eta text ,draught double precision ,destination text ,mothershipmmsi integer ,ts bigint ,CONSTRAINT static_ships_pkey PRIMARY KEY(id)   );</code></p>
-<p>####2.1.3加载数据到数据库<br><code>postgres=# COPY ais_data . static_ships(sourcemmsi , imo , callsign , shipname , shiptype, to_bow ,to_stern ,to_starboard ,to_port , eta , draught , destination , mothershipmmsi , ts ) FROM &#39;E:\YANYI\[P1] AIS Data\nari_static.csv &#39;DELIMITER &#39;,&#39; CSV HEADER;</code></p>
-<p><em>注意：绝对路径要用英文</em></p>
-<p>####2.1.4查询计算了表static_ships中列出了多少个不同的船名<br><code>SELECT count(DISTINCT shipname) as nb FROM ais_data.static_ships;</code><br><img src="https://s2.loli.net/2023/11/29/OWgNzCpbK5dQJ8D.png" alt="image.png"></p>
-<p>####2.1.5对船舶的重复信息，使用SQL视图将该表中的重复行分组在一起<br><code>postgres=# CREATE OR REPLACE VIEW ais_data.ships AS  SELECT  sourcemmsi , imo , callsign , shipname  FROM ais_data . static_ships  GROUP BY sourcemmsi , imo , callsign, shipname ;</code></p>
-<p><img src="https://s2.loli.net/2023/11/29/vrMoehAWlIbzVqD.png" alt="image.png"></p>
-<p>####2.1.6有多少艘船的船名是空的、空的或有空格的?<br><code>postgres=#SELECT * FROM ais_data.ships WHERE trim(shipname)=&#39;&#39; or shipname IS NULL;</code></p>
-<p><img src="https://s2.loli.net/2023/11/29/v3bxEZjrVICza2d.png" alt="image.png"></p>
-<p>####2.1.7 其他</p>
-<p>其他指令类似，不再赘述</p>
-<p>###2.2可视化QGIS<br>####2.2.1创建复合数据集<br><code>CREATE SCHEMA IF NOT EXISTS &quot;context_data&quot;;</code><br>####加载Shapefile数据<br>这时需要用到如下这个软件</p>
-<p><img src="https://s2.loli.net/2023/11/29/wCKBbfyNnk2cl7Z.png" alt="image.png"></p>
-<p>开始更改格式并加载数据</p>
-<p><img src="https://s2.loli.net/2023/11/29/8hUxuVtzf2DnEMW.png" alt="image.png"></p>
-<p>在QGIS中导入数据层</p>
-<p><img src="https://s2.loli.net/2023/11/29/PLWRfcvhkGjNyUB.png" alt="image.png"></p>
-<p>显示加载结果<br><img src="https://s2.loli.net/2023/11/29/I4gGhUJANHR2586.png" alt="image.png"></p>
-<p>###2.3创建海事分析数据库</p>
-<p>自己看答案去，想得美</p>
-]]></content>
-  </entry>
-  <entry>
     <title>工程师文化</title>
     <url>/2023/11/09/pagetags/</url>
     <content><![CDATA[<p>本文为笔者第一篇博文，内容为一篇读书笔记，笔者立志成为一名卓越的工程师，那么样才算优秀呢？《浪潮之巅》这本书作者提出对工程师文化的看法，我始终相信“<strong>不见森林，便不见树木</strong>”，因此我希望通过写这篇文章可以更深入这个问题</p>
@@ -67,5 +25,42 @@
       <tags>
         <tag>-杂谈</tag>
       </tags>
+  </entry>
+  <entry>
+    <title>航海大数据作业：第三章练习题</title>
+    <url>/2023/11/27/%E6%95%B0%E6%8D%AE%E5%BA%93%E5%BB%BA%E7%AB%8B/</url>
+    <content><![CDATA[<p>[TOC]</p>
+<h2 id="一：实验前准备"><a href="#一：实验前准备" class="headerlink" title="一：实验前准备"></a>一：实验前准备</h2><h3 id="1-1本书重要索引网站（非常重要！！！！）"><a href="#1-1本书重要索引网站（非常重要！！！！）" class="headerlink" title="1.1本书重要索引网站（非常重要！！！！）"></a>1.1本书重要索引网站（<em>非常重要！！！！</em>）</h3><p>1.SQL-<strong>答案文件</strong>：<a href="http://zenodo.org/records/3930660">第三章习题答案</a><br>2.需要处理的<strong>数据</strong>：<a href="http://zenodo.org/record/1167595">数据集地址</a></p>
+<p><em>注意：打开以上两个网站需要魔法</em></p>
+<h3 id="1-2知识准备"><a href="#1-2知识准备" class="headerlink" title="1.2知识准备"></a>1.2知识准备</h3><h4 id="1-2-1所要处理的数据类型如下"><a href="#1-2-1所要处理的数据类型如下" class="headerlink" title="1.2.1所要处理的数据类型如下"></a>1.2.1所要处理的数据类型如下</h4><p> •<strong>导航数据</strong>，即围绕主要航线航行的船舶的AIS历史位置;<br> •<strong>面向船舶的数据</strong>(例如船舶注册，即具有其特征的船舶列表);<br> •<strong>地理数据</strong>(即船舶航行的制图、地形和监管背景);<br> •<strong>环境数据</strong>(即气候和海况相关信息)</p>
+<h4 id="1-2-2领先的海洋信息研究课题"><a href="#1-2-2领先的海洋信息研究课题" class="headerlink" title="1.2.2领先的海洋信息研究课题"></a>1.2.2领先的海洋信息研究课题</h4><p>•<strong>船舶轨迹分析和预测</strong>，最近主要集中在AIS系统和补充源来预测和分析船舶轨迹[<br>•<strong>交通预测</strong>，如港口吞吐量处理和货物吞吐量预测<br>•<strong>碰撞预防</strong>，通过分析船舶的航行行为来分析船舶碰撞的风险<br>•<strong>船舶检测、分类和识别，分析划定区域内摄像机的视频</strong>，例如检测小型船只，或在较大区域内的遥感图像<br>•<strong>异常检测</strong>，主要采用数据驱动的方法对正常流量进行建模，任何异常行为都与潜在威胁相关<br>•<strong>对海上人类活动的分析</strong>，如捕鱼、非法交通(人类、毒品、货物)、海盗<br>•<strong>多源信息融合</strong>，减少可用数据的不确定性，提高分析的准确性<br>•<em><strong>海上运输网络的动态</strong></em>，其中通过设计用于分析行为模式的网络抽象，在聚合级别考虑轨迹数据</p>
+<h4 id="1-2-2重要概念"><a href="#1-2-2重要概念" class="headerlink" title="1.2.2重要概念"></a>1.2.2重要概念</h4><p>imo(国际海事组织)、<br>mmsi(海上移动业务标识)<br>SQL(Structured Query Language):结构化查询语言<br>B-Tree&#x2F;R-Tree&#x2F;GiST(广义搜索树)</p>
+<h3 id="1-3软件下载安装（非常重要！！！！）"><a href="#1-3软件下载安装（非常重要！！！！）" class="headerlink" title="1.3软件下载安装（非常重要！！！！）"></a>1.3软件下载安装（<em>非常重要！！！！</em>）</h3><p>####1.3.1PostgreSQL<br>为了组织、存储、访问和处理海事数据的数据库管理系统（DBMS）：<a href="http://www.postgresql.org/"><strong>PostgreSQL</strong></a> <!--[PostgreSQL 11.2 手册](http://http://www.postgres.cn/docs/11/index.html)--><br>  a.<a href="http://postgis.net/"><strong>PostGIS</strong></a>是强大的附件，为DBMS增加了<strong>地理空间</strong>功能<br>  b.<a href="http://www.pgadmin.org/"><strong>PGAdmin</strong></a>可以<strong>创建</strong>和<strong>查询</strong>新的数据库和表</p>
+<p><em>注意：只需安装PostgresSQL,PostGIS与PGAdmin为扩展应用</em><br><img src="https://s2.loli.net/2023/11/29/hzSUHL7ucn4pa2X.png" alt="image.png"><br><img src="https://s2.loli.net/2023/11/29/wIMVv2P7BeFmbGx.png" alt="image.png"></p>
+<h4 id="1-3-2QGIS"><a href="#1-3-2QGIS" class="headerlink" title="1.3.2QGIS"></a>1.3.2QGIS</h4><p>可视化分析工具： <a href="https://www.qgis.org/"><strong>QGIS</strong></a><!--[QGIS在线用户指南](http://docs.qgis.org/3.4/en/docs/user_manual/)--></p>
+<h4 id="1-3-3软件版本"><a href="#1-3-3软件版本" class="headerlink" title="1.3.3软件版本"></a>1.3.3软件版本</h4><p>&#x3D;&#x3D;本章中介绍的所有查询都是使用本地安装的<strong>PostgreSQL 11.5</strong>、<strong>PostGIS 2.5.3</strong>和<strong>pgAdmin4v4.18</strong> (Windows x86-64)编写的&#x3D;&#x3D;</p>
+<h2 id="二：开始实验"><a href="#二：开始实验" class="headerlink" title="二：开始实验"></a>二：开始实验</h2><h3 id="2-1建立数据库并进行查询"><a href="#2-1建立数据库并进行查询" class="headerlink" title="2.1建立数据库并进行查询"></a>2.1建立数据库并进行查询</h3><h4 id="2-1-1建立数据库maritime-informatics"><a href="#2-1-1建立数据库maritime-informatics" class="headerlink" title="2.1.1建立数据库maritime_informatics"></a>2.1.1建立数据库maritime_informatics</h4><p><strong>打开pgAdmin</strong></p>
+<p><img src="https://s2.loli.net/2023/11/29/KuzXiUYNQ3DW4IH.png" alt="image.png"><br><strong>建立数据库</strong></p>
+<p><img src="https://s2.loli.net/2023/11/29/IAT5SNJn3t6gU8d.png" alt="image.png"><br><strong>命名数据库</strong></p>
+<p><img src="https://s2.loli.net/2023/11/29/H3GfOhplL4Tm8QW.png" alt="image.png"><br><strong>建立模式ais_data</strong></p>
+<p><img src="https://s2.loli.net/2023/11/29/tIvPHu1qLZEy8oK.png" alt="image.png"></p>
+<h4 id="2-1-2创建表ais-data-static-ships"><a href="#2-1-2创建表ais-data-static-ships" class="headerlink" title="2.1.2创建表ais_data . static_ships"></a>2.1.2创建表ais_data . static_ships</h4><p><code>postgres=# CREATE TABLE ais_data . static_ships ( id bigserial,sourcemmsi integer,imo integer ,callsign text ,shipname text ,shiptype integer ,to_bow integer ,to_stern integer,to_starboard integer ,to_port integer ,eta text ,draught double precision ,destination text ,mothershipmmsi integer ,ts bigint ,CONSTRAINT static_ships_pkey PRIMARY KEY(id)   );</code></p>
+<h4 id="2-1-3加载数据到数据库"><a href="#2-1-3加载数据到数据库" class="headerlink" title="2.1.3加载数据到数据库"></a>2.1.3加载数据到数据库</h4><p><code>postgres=# COPY ais_data . static_ships(sourcemmsi , imo , callsign , shipname , shiptype, to_bow ,to_stern ,to_starboard ,to_port , eta , draught , destination , mothershipmmsi , ts ) FROM &#39;E:\YANYI\[P1] AIS Data\nari_static.csv &#39;DELIMITER &#39;,&#39; CSV HEADER;</code></p>
+<p><em>注意：绝对路径要用英文</em></p>
+<h4 id="2-1-4查询计算了表static-ships中列出了多少个不同的船名"><a href="#2-1-4查询计算了表static-ships中列出了多少个不同的船名" class="headerlink" title="2.1.4查询计算了表static_ships中列出了多少个不同的船名"></a>2.1.4查询计算了表static_ships中列出了多少个不同的船名</h4><p><code>SELECT count(DISTINCT shipname) as nb FROM ais_data.static_ships;</code><br><img src="https://s2.loli.net/2023/11/29/OWgNzCpbK5dQJ8D.png" alt="image.png"></p>
+<h4 id="2-1-5对船舶的重复信息，使用SQL视图将该表中的重复行分组在一起"><a href="#2-1-5对船舶的重复信息，使用SQL视图将该表中的重复行分组在一起" class="headerlink" title="2.1.5对船舶的重复信息，使用SQL视图将该表中的重复行分组在一起"></a>2.1.5对船舶的重复信息，使用SQL视图将该表中的重复行分组在一起</h4><p><code>postgres=# CREATE OR REPLACE VIEW ais_data.ships AS  SELECT  sourcemmsi , imo , callsign , shipname  FROM ais_data . static_ships  GROUP BY sourcemmsi , imo , callsign, shipname ;</code></p>
+<p><img src="https://s2.loli.net/2023/11/29/vrMoehAWlIbzVqD.png" alt="image.png"></p>
+<h4 id="2-1-6有多少艘船的船名是空的、空的或有空格的"><a href="#2-1-6有多少艘船的船名是空的、空的或有空格的" class="headerlink" title="2.1.6有多少艘船的船名是空的、空的或有空格的?"></a>2.1.6有多少艘船的船名是空的、空的或有空格的?</h4><p><code>postgres=#SELECT * FROM ais_data.ships WHERE trim(shipname)=&#39;&#39; or shipname IS NULL;</code></p>
+<p><img src="https://s2.loli.net/2023/11/29/v3bxEZjrVICza2d.png" alt="image.png"></p>
+<h4 id="2-1-7-其他"><a href="#2-1-7-其他" class="headerlink" title="2.1.7 其他"></a>2.1.7 其他</h4><p>其他指令类似，不再赘述</p>
+<h3 id="2-2可视化QGIS"><a href="#2-2可视化QGIS" class="headerlink" title="2.2可视化QGIS"></a>2.2可视化QGIS</h3><p>####2.2.1创建复合数据集<br><code>CREATE SCHEMA IF NOT EXISTS &quot;context_data&quot;;</code><br>####加载Shapefile数据<br>这时需要用到如下这个软件</p>
+<p><img src="https://s2.loli.net/2023/11/29/wCKBbfyNnk2cl7Z.png" alt="image.png"></p>
+<p>开始更改格式并加载数据</p>
+<p><img src="https://s2.loli.net/2023/11/29/8hUxuVtzf2DnEMW.png" alt="image.png"></p>
+<p>在QGIS中导入数据层</p>
+<p><img src="https://s2.loli.net/2023/11/29/PLWRfcvhkGjNyUB.png" alt="image.png"></p>
+<p>显示加载结果<br><img src="https://s2.loli.net/2023/11/29/I4gGhUJANHR2586.png" alt="image.png"></p>
+<h3 id="2-3创建海事分析数据库"><a href="#2-3创建海事分析数据库" class="headerlink" title="2.3创建海事分析数据库"></a>2.3创建海事分析数据库</h3><p>自己看答案去，想得美</p>
+]]></content>
   </entry>
 </search>
